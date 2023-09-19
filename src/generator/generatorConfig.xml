@@ -1,47 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
-	<classPathEntry location="D:/JDK/db/sqljdbc42.jar" />
-	<context id="context1" targetRuntime="MyBatis3">
-		<plugin type="org.mybatis.generator.plugins.RowBoundsPlugin" />
+	<properties resource="application.properties" />
+	<!--数据库驱动包位置 -->
+	<classPathEntry
+		location="C:/Users/28743/sqljdbc4-4.0.jar" />
 
+	<context id="context1">
+		<plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"></plugin>
 		<commentGenerator>
 			<property name="suppressDate" value="true" />
 		</commentGenerator>
-		<!-- JDBC Connection -->
+		<!-- JDBC -->
 		<jdbcConnection
 			driverClass="com.microsoft.sqlserver.jdbc.SQLServerDriver"
-			connectionURL="jdbc:sqlserver://127.0.0.1:1433;DatabaseName=LINE;selectMethod=cursor"
-			password="0503" userId="MiMi" />
+			connectionURL="jdbc:sqlserver://localhost\SQLEXPRESS:1433;DatabaseName=LineBot"
+			userId="sa" password="password123" />
 
 		<javaTypeResolver>
 			<property name="forceBigDecimals" value="false" />
 		</javaTypeResolver>
 
-	<!-- Model generator , generate the POJOs -->
-	
-		<javaModelGenerator targetPackage="com.line.demo.model"
-			targetProject="LineProject" >
-			<property name="trimStrings" value="true"/>
+		<!--生成模型包的位置 -->
+		<javaModelGenerator
+			targetPackage="${targetPackage.model}"
+			targetProject="${mapper.location}">
+			<property name="trimStrings" value="true" />
 		</javaModelGenerator>
-		<!-- sql map generator, generate the sql map XML files -->	
-		<sqlMapGenerator targetPackage="com.line.demo.mapper" 
-		targetProject="LineProject" />
 
-	<!-- client generator , generate the DAO -->
-		<javaClientGenerator targetPackage="com.line.demo.mapper"
-			targetProject="LineProject" type="XMLMAPPER" />
+		<!--生成映射文件的包名和位置 -->
+		<sqlMapGenerator
+			targetPackage="${targetPackage.mapper}"
+			targetProject="${mapper.location}">
 
-	<!-- 沒有PK的 -->
-		<!-- 
-		<table  tableName="輸入資料表名稱"/>
-		 -->
-		
-	<!-- 有PK的 -->
-	
-	<table tableName="USERS">
-		<generatedKey column="PK" sqlStatement="SqlServer"
-			identity="true"/>
-	</table>
+		</sqlMapGenerator>
+		<!--生成映dao的包名和位置 -->
+		<javaClientGenerator type="XMLMAPPER"
+			targetPackage="${targetPackage.mapper}"
+			targetProject="${mapper.location}">
+		</javaClientGenerator>
+
+		<table tableName="LINE_USER">
+			<generatedKey column="ID" sqlStatement="SqlServer"
+				identity="false" />
+			<columnOverride column="LINE_TOKEN"
+				property="user_line_token" />
+			<columnOverride column="NAME" property="name" />
+			<columnOverride column="DEPT_CODE"
+				property="dept_code" />
+			<columnOverride column="TEAM_CODE"
+				property="team_code" />
+			<columnOverride column="USER_STATUS"
+				property="user_status" />
+			<columnOverride column="MEMO" property="memo" />
+		</table>
+
+		<table tableName="USER_AUTH">
+			<columnOverride column="LINE_USER_ID"
+				property="user_id" />
+			<columnOverride column="SYSTEM_NAME"
+				property="system_name" />
+		</table>
+
 	</context>
 </generatorConfiguration>
